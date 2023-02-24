@@ -9,6 +9,22 @@
 
 - GA acess
 
+## Snapshot
+
+![](./docs/images/snapshot.png)
+
+## Features
+[**Top**](#welcome-to-packagestransfer)
+
+## Supported platforms
+[**Top**](#welcome-to-packagestransfer)
+
+- Windows
+    - Command Prompt, PowerShell, Windows Terminal
+- Linux (Ubuntu, etc)
+    - Windows Terminal (WSL 2)
+
 ## License
+[**Top**](#welcome-to-packagestransfer)
 
 This project is licensed under the [MIT License](https://github.com/FRACerqueira/PackagesTransfer/blob/master/LICENSE)
