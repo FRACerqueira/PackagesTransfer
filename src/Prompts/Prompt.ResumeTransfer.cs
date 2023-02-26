@@ -54,7 +54,7 @@ namespace PackagesTransfer.Prompts
                         PromptPlus.Select<PackageInfo>("Items published")
                             .AddItems(processTransfer.PackagesOk)
                             .PageSize(defaultsettings.pagelength)
-                            .TextSelector(x => $"{x.Id}:{x.Version}")
+                            .TextSelector(x => $"{x.Id}:{x.Version} ({x.Protocol})")
                             .DescriptionSelector(x => x.ResumeInfo ?? " ")
                             .Config(x => x.EnabledAbortKey(true))
                             .Run(cancellationToken);
@@ -63,7 +63,7 @@ namespace PackagesTransfer.Prompts
                         PromptPlus.Select<PackageInfo>("Items with failures")
                             .AddItems(processTransfer.PackagesErr)
                             .PageSize(defaultsettings.pagelength)
-                            .TextSelector(x => $"{x.Id}:{x.Version}")
+                            .TextSelector(x => $"{x.Id}:{x.Version} ({x.Protocol})")
                             .DescriptionSelector(x => x.ResumeInfo ?? " ")
                             .Config(x => x.EnabledAbortKey(true))
                             .Run(cancellationToken);

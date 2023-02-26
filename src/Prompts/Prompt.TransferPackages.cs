@@ -101,6 +101,7 @@ namespace PackagesTransfer.Prompts
                 sw.Start();
                 var protocols = usersettings.filterProtocoltype.Split(';', StringSplitOptions.RemoveEmptyEntries);
                 var result = new List<PackageInfo>();
+                var canceltransfer = false;
                 foreach (var itemprotocol in protocols)
                 {
                     npmregistry = null;
@@ -125,13 +126,15 @@ namespace PackagesTransfer.Prompts
                         }
                         publishsource = source.Packages.Where(x => x.Protocol == itemprotocol).ToList();
                         result.AddRange(publishsource);
-                        _ = PromptPlus
+                        var prgbar = PromptPlus
                             .Progressbar($"Transfering {itemprotocol} items.", msgprgbar)
                             .Width(100)
                             .Config(x => x.EnabledAbortKey(true))
                             .StartInterationId(0)
                             .UpdateHandler(DownloadAndPublishNuget)
                             .Run(stoppingToken);
+                        
+                        canceltransfer = prgbar.IsAborted;
                     }
                     finally
                     {
@@ -144,6 +147,10 @@ namespace PackagesTransfer.Prompts
                                 msgerrprocess = cmd.Error;
                             }
                         }
+                    }
+                    if (canceltransfer)
+                    {
+                        break;
                     }
                 }
                 source.Packages = result.ToArray();
@@ -163,14 +170,6 @@ namespace PackagesTransfer.Prompts
                     catch (Exception ex)
                     {
                         _logger.LogError($"TransferPackages erro removed files and folder: {destfolder}: {ex}");
-                        if (string.IsNullOrEmpty(msgerrprocess))
-                        {
-                            msgerrprocess = "TransferPackages erro removed files and folder";
-                        }
-                        else
-                        {
-                            msgerrprocess += ". TransferPackages erro removed files and folder";
-                        }
                     }
                 }
                 sw.Stop();
