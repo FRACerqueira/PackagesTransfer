@@ -6,10 +6,10 @@
 
 ## Download V.1.0.0
 
-- [Click here for Windows-X64 plataform](https://github.com/FRACerqueira/PackagesTransfer/releases/download/v1.0.0-beta/Windows64Exe.zip) 
+- [Click here for Windows-X64 plataform](https://github.com/FRACerqueira/PackagesTransfer/releases/download/v.1.0.0/Windows64Exe.zip) 
     - Extract the files in a folder and then run "./PackagesTransfer.exe" 
 
-- [Click here for Linux-X64 plataform](https://github.com/FRACerqueira/PackagesTransfer/releases/download/v1.0.0-beta/Linux64Exe.zip) 
+- [Click here for Linux-X64 plataform](https://github.com/FRACerqueira/PackagesTransfer/releases/download/v.1.0.0/Linux64Exe.zip) 
     - Extract the files in a folder and then run "./PackagesTransfer" 
 
 ## Snapshot
@@ -44,7 +44,7 @@
 
 - Display of a summary of successful and failed transfers
 
-- All entries are saved (except passwords) in the usersettings.json file for the next run to be done in the "Next–Next–Finished" template
+- All entries are saved (except passwords) in the usersettings.json file for the next run to be done in the "Nextâ€“Nextâ€“Finished" template
 
 ## Application configuration
 
