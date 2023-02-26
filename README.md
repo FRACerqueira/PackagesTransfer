@@ -5,6 +5,14 @@
 
 **Interactive command-line to transfer packages between source to target with protocols Nuget and Npm.**
 
+## Download V.1.0.0
+
+- [Click here for Windows-X64 plataform](https://github.com/FRACerqueira/PackagesTransfer/releases/download/v1.0.0-beta/Windows64Exe.zip) 
+    - Extract the files in a folder and then run "./PackagesTransfer.exe" 
+
+- [Click here for Linux-X64 plataform](https://github.com/FRACerqueira/PackagesTransfer/releases/download/v1.0.0-beta/Linux64Exe.zip) 
+    - Extract the files in a folder and then run "./PackagesTransfer" 
+
 ## Snapshot
 
 ![](./docs/images/snapshot.png)
