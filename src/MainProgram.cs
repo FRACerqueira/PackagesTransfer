@@ -58,7 +58,7 @@ internal class MainProgram : IHostedService
             PromptPlus.HideSymbolPromptAndDone = true;
             PromptPlus.EnabledAbortKey = false;
             PromptPlus.HideAfterFinish = true;
-            PromptPlus.EnabledTooltip = false;
+            PromptPlus.EnabledTooltip = _defaultsettings.showtips;
 
             try
             {
@@ -154,7 +154,7 @@ internal class MainProgram : IHostedService
                         {
                             var msg = "Invalid type transfer in Get information from source";
                             _logger?.LogError(msg);
-                            throw new Exception(msg);
+                            throw new NotImplementedException(msg);
                         }
 
                         if (_sourceinfo.Packages!.Count() == 0)
@@ -212,7 +212,7 @@ internal class MainProgram : IHostedService
                     {
                         var msg = "Invalid type transfer in Get information from target";
                         _logger?.LogError(msg);
-                        throw new Exception(msg);
+                        throw new NotImplementedException(msg);
                     }
 
                     _lastsettings.targeturi = _targetinfo.Uribase;
@@ -331,13 +331,13 @@ internal class MainProgram : IHostedService
         {
             var msg = "Invalid type packages in source";
             _logger?.LogError(msg);
-            throw new Exception(msg);
+            throw new NotImplementedException(msg);
         }
         if (_targetinfo.Packages == null)
         {
             var msg = "Invalid type packages in target";
             _logger?.LogError(msg);
-            throw new Exception(msg);
+            throw new NotImplementedException(msg);
         }
         int qtddup = 0; 
         var protocols = _lastsettings.filterProtocoltype.Split(';', StringSplitOptions.RemoveEmptyEntries);

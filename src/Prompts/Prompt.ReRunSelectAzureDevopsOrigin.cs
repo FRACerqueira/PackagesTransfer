@@ -42,21 +42,35 @@ namespace PackagesTransfer.Prompts
                     string readsource;
                     if (seletedfeed.project == null)
                     {
-                        readsource = FeedTransferConstants.UriPackageList
+                        readsource = ProtocolsTransferConstant.UriPackageList
                             .Replace("{baseorg}", AzureDevopsPrefix(dataInfo.Uribase, dataInfo.Prefixuripkg, _logger), StringComparison.InvariantCultureIgnoreCase)
                             .Replace("{feedname}", seletedfeed.name, StringComparison.InvariantCultureIgnoreCase)
                             .Replace("{filtertype}", item, StringComparison.InvariantCultureIgnoreCase);
                     }
                     else
                     {
-                        readsource = FeedTransferConstants.UriPackageScopedList
+                        readsource = ProtocolsTransferConstant.UriPackageScopedList
                             .Replace("{baseorg}", AzureDevopsPrefix(dataInfo.Uribase, dataInfo.Prefixuripkg, _logger), StringComparison.InvariantCultureIgnoreCase)
                             .Replace("{projectname}", seletedfeed.project.name, StringComparison.InvariantCultureIgnoreCase)
                             .Replace("{feedname}", seletedfeed.name, StringComparison.InvariantCultureIgnoreCase)
                             .Replace("{filtertype}", item, StringComparison.InvariantCultureIgnoreCase);
                     }
+                    var defsufix = string.Empty;
+                    if (item == ProtocolsTransferConstant.NameNugetProtocol)
+                    {
+                        defsufix = defaultsettings.sufixnuget.Split(";", StringSplitOptions.RemoveEmptyEntries)[0];
+                    }
+                    else if (item == ProtocolsTransferConstant.NameNpmProtocol)
+                    {
+                        defsufix = defaultsettings.sufixnpm.Split(";", StringSplitOptions.RemoveEmptyEntries)[0];
+                    }
+                    else
+                    {
+                        _logger?.LogError($"Not Implemented Sufix protocol {item}");
+                        throw new NotImplementedException($"Sufix protocol {item}");
+                    }
 
-                    var itempackageread = AzureReadPackges(item,denyupstream,
+                    var itempackageread = AzureReadPackges(item, defsufix, denyupstream,
                         httpClient,
                         defaultsettings.takequery,
                         readsource,

@@ -28,13 +28,13 @@ namespace PackagesTransfer.Prompts
             {
                 var msg = "TransferPackages, Invalid type packages in source";
                 _logger?.LogError(msg);
-                throw new Exception(msg);
+                throw new ArgumentException(msg);
             }
             if (target.Packages == null)
             {
                 var msg = "TransferPackages, Invalid type packages in target";
                 _logger?.LogError(msg);
-                throw new Exception(msg);
+                throw new ArgumentException(msg);
             }
 
             var localfolder = usersettings.tmpfolder;
@@ -87,7 +87,7 @@ namespace PackagesTransfer.Prompts
             else
             {
                 _logger.LogError("TransferPackages, Invalid type transfer");
-                throw new Exception("Invalid type transfer");
+                throw new NotImplementedException("Invalid type transfer");
             }
 
             var resumePublishOk = new List<PackageInfo>();
@@ -107,7 +107,7 @@ namespace PackagesTransfer.Prompts
                     publishprotocol = itemprotocol;
                     try
                     {
-                        if (publishprotocol == FeedTransferConstants.NameNpmProtocol)
+                        if (publishprotocol == ProtocolsTransferConstant.NameNpmProtocol)
                         {
                             var cmd = await NpmCommands.SetUserConfigTransfer(target, defaultsettings.timeoutcmd, _logger, stoppingToken);
                             if (cmd.Error != null)
@@ -135,7 +135,7 @@ namespace PackagesTransfer.Prompts
                     }
                     finally
                     {
-                        if (!hasErrorUserconfigNpm && publishprotocol == FeedTransferConstants.NameNpmProtocol)
+                        if (!hasErrorUserconfigNpm && publishprotocol == ProtocolsTransferConstant.NameNpmProtocol)
                         {
 
                             var cmd = await NpmCommands.ResetUserConfig(defaultsettings.timeoutcmd, _logger, stoppingToken);
@@ -177,7 +177,7 @@ namespace PackagesTransfer.Prompts
             }
             if (!string.IsNullOrEmpty(msgerrprocess))
             {
-                throw new Exception(msgerrprocess);
+                throw new InvalidOperationException(msgerrprocess);
             }
             _logger.LogInformation($"Local Folder : {destfolder}");
             _logger.LogInformation($"Elapsed TimeLocal : {sw.Elapsed}");
@@ -219,7 +219,6 @@ namespace PackagesTransfer.Prompts
                 }
                 return result.Uri.AbsoluteUri;
             }
-
 
             async Task<ProgressBarInfo> DownloadAndPublishNuget(ProgressBarInfo info, CancellationToken cancellationToken)
             {
@@ -263,11 +262,11 @@ namespace PackagesTransfer.Prompts
                                 string.Format("{0}:{1}", "", source.Passsword))));
 
                     string uridownload = string.Empty;
-                    if (publishprotocol == FeedTransferConstants.NameNugetProtocol)
+                    if (publishprotocol == ProtocolsTransferConstant.NameNugetProtocol)
                     {
                         if (source.Seleted!.project != null && source.Seleted!.project.name! != null)
                         {
-                            uridownload = FeedTransferConstants.UriNugetPackageScopedDownload
+                            uridownload = ProtocolsTransferConstant.UriNugetPackageScopedDownload
                                 .Replace("{baseorg}", AzureDevopsPrefix(source.Uribase, source.Prefixuripkg), StringComparison.InvariantCultureIgnoreCase)
                                 .Replace("{feedname}", HttpUtility.UrlEncode(source.Seleted!.name!), StringComparison.InvariantCultureIgnoreCase)
                                 .Replace("{projectname}", HttpUtility.UrlEncode(source.Seleted!.project!.name!), StringComparison.InvariantCultureIgnoreCase)
@@ -276,18 +275,18 @@ namespace PackagesTransfer.Prompts
                         }
                         else
                         {
-                            uridownload = FeedTransferConstants.UriNugetPackageDownload
+                            uridownload = ProtocolsTransferConstant.UriNugetPackageDownload
                                 .Replace("{baseorg}", AzureDevopsPrefix(source.Uribase, source.Prefixuripkg), StringComparison.InvariantCultureIgnoreCase)
                                 .Replace("{feedname}", HttpUtility.UrlEncode(source.Seleted!.name!), StringComparison.InvariantCultureIgnoreCase)
                                 .Replace("{pkgname}", HttpUtility.UrlEncode(pkg.Id), StringComparison.InvariantCultureIgnoreCase)
                                 .Replace("{pkgver}", HttpUtility.UrlEncode(pkg.Version), StringComparison.InvariantCultureIgnoreCase);
                         }
                     }
-                    if (publishprotocol == FeedTransferConstants.NameNpmProtocol)
+                    if (publishprotocol == ProtocolsTransferConstant.NameNpmProtocol)
                     {
                         if (source.Seleted!.project != null && source.Seleted!.project!.name! != null)
                         {
-                            uridownload = FeedTransferConstants.UriNmpPackageScopedDownload
+                            uridownload = ProtocolsTransferConstant.UriNmpPackageScopedDownload
                                 .Replace("{baseorg}", AzureDevopsPrefix(source.Uribase, source.Prefixuripkg), StringComparison.InvariantCultureIgnoreCase)
                                 .Replace("{feedname}", HttpUtility.UrlEncode(source.Seleted!.name!), StringComparison.InvariantCultureIgnoreCase)
                                 .Replace("{projectname}", HttpUtility.UrlEncode(source.Seleted!.project!.name!), StringComparison.InvariantCultureIgnoreCase)
@@ -296,7 +295,7 @@ namespace PackagesTransfer.Prompts
                         }
                         else
                         {
-                            uridownload = FeedTransferConstants.UriNmpPackageDownload
+                            uridownload = ProtocolsTransferConstant.UriNmpPackageDownload
                                 .Replace("{baseorg}", AzureDevopsPrefix(source.Uribase, source.Prefixuripkg), StringComparison.InvariantCultureIgnoreCase)
                                 .Replace("{feedname}", HttpUtility.UrlEncode(source.Seleted!.name!), StringComparison.InvariantCultureIgnoreCase)
                                 .Replace("{pkgname}", HttpUtility.UrlEncode(pkg.Id), StringComparison.InvariantCultureIgnoreCase)
@@ -338,19 +337,19 @@ namespace PackagesTransfer.Prompts
                 }
                 else if (hascopy && (AppConstants.IsBetweenAzuredevops || AppConstants.IsFileToAzuredevops))
                 {
-                    if (publishprotocol == FeedTransferConstants.NameNugetProtocol)
+                    if (publishprotocol == ProtocolsTransferConstant.NameNugetProtocol)
                     {
                         string targetFeed;
                         if (target.Seleted!.project != null && target.Seleted!.project!.name! != null)
                         {
-                            targetFeed = FeedTransferConstants.UriNugetPackageScopedSource
+                            targetFeed = ProtocolsTransferConstant.UriNugetPackageScopedSource
                                .Replace("{baseorg}", AzureDevopsPrefix(target.Uribase, target.Prefixuripkg), StringComparison.InvariantCultureIgnoreCase)
                                .Replace("{projectname}", target.Seleted!.project!.name, StringComparison.InvariantCultureIgnoreCase)
                                .Replace("{feedname}", target.Seleted!.name!, StringComparison.InvariantCultureIgnoreCase);
                         }
                         else
                         {
-                            targetFeed = FeedTransferConstants.UriNugetPackageSource
+                            targetFeed = ProtocolsTransferConstant.UriNugetPackageSource
                                .Replace("{baseorg}", AzureDevopsPrefix(target.Uribase, target.Prefixuripkg), StringComparison.InvariantCultureIgnoreCase)
                                .Replace("{feedname}", target.Seleted!.name!, StringComparison.InvariantCultureIgnoreCase);
                         }
@@ -435,7 +434,7 @@ namespace PackagesTransfer.Prompts
                             }
                         }
                     }
-                    else if (publishprotocol == FeedTransferConstants.NameNpmProtocol)
+                    else if (publishprotocol == ProtocolsTransferConstant.NameNpmProtocol)
                     {
                         try
                         {

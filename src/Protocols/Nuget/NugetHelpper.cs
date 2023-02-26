@@ -31,7 +31,7 @@ namespace PackagesTransfer.Protocols.Nuget
                                     Id = id,
                                     Version = verid,
                                     FileName = new FileInfo(pathfile).Name,
-                                    Protocol = FeedTransferConstants.NameNugetProtocol
+                                    Protocol = ProtocolsTransferConstant.NameNugetProtocol
                                 };
                             }
                         }

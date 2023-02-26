@@ -2,9 +2,8 @@
 {
     internal static class AppConstants
     {
-        // between Azure-devops/File System to Azure-devops/Azure-devops to File System
-
         private static string _seletedTypeTransfer = string.Empty;
+
         public const string BetweenAzuredevops = "Between Azure-devops";
         public const string FileToAzuredevops = "File System to Azure-devops";
         public const string AzuredevopsToFile = "Azure-devops to File System";
@@ -15,6 +14,7 @@
         public const string NameOriSource = "Source";
         public const string NameOriTarget = "Target";
         public const string BannerTitle = "Packages Transfer";
+
         public static bool IsOriSource(string value) => value == NameOriSource;
         public static bool IsOriTarget(string value) => value == NameOriTarget;
 

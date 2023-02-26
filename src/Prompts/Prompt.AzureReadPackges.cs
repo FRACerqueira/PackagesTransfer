@@ -12,27 +12,12 @@ namespace PackagesTransfer.Prompts
 {
     internal partial class PromptTransfer
     {
-        public ProcessReadPackges AzureReadPackges(string protocol, UpstreamSource[] filterupstream, HttpClient httpClient,int takequery, string baseuri, string pwdpat, string prompt, string promptdesc, CancellationToken cancellationToken)
+        public ProcessReadPackges AzureReadPackges(string protocol,string defsufix, UpstreamSource[] filterupstream, HttpClient httpClient,int takequery, string baseuri, string pwdpat, string prompt, string promptdesc, CancellationToken cancellationToken)
         {
-            string _CurrentArtefact = string.Empty;
-
-            string sufixfile = string.Empty;
-            if (protocol == FeedTransferConstants.NameNugetProtocol)
-            {
-                sufixfile = FeedTransferConstants.SufixNugetProtocol;
-            }
-            else if (protocol == FeedTransferConstants.NameNpmProtocol)
-            {
-                sufixfile = FeedTransferConstants.SufixNpmProtocol;
-            }
-            else 
-            {
-                _logger?.LogError($"Error AzureReadPackges protocol not implemented: {protocol}");
-                throw new Exception($"Error AzureReadPackges protocol not implemented: {protocol}");
-            }
+            string currentArtefact = string.Empty;
 
             ResultPromptPlus<IEnumerable<ResultProcess>> process = PromptPlus.WaitProcess(prompt, promptdesc)
-              .RefreshDescription(() => _CurrentArtefact)
+              .RefreshDescription(() => currentArtefact)
               .AddProcess(new SingleProcess(async (StopApp) =>
               {
                   try
@@ -60,7 +45,7 @@ namespace PackagesTransfer.Prompts
                               {
                                   if (responsepkg.StatusCode != HttpStatusCode.OK)
                                   {
-                                      throw new Exception($"{(int)responsepkg.StatusCode}:{responsepkg.StatusCode}");
+                                      throw new HttpRequestException($"{(int)responsepkg.StatusCode}:{responsepkg.StatusCode}");
                                   }
                                   string result = await responsepkg.Content.ReadAsStringAsync(StopApp);
                                   Details = JsonSerializer.Deserialize<PackageRoot>(result);
@@ -69,18 +54,18 @@ namespace PackagesTransfer.Prompts
                               skip += Details!.count;
                               if (filterupstream.Length > 0)
                               {
-                                  _CurrentArtefact = $"Found {skip} artefacts, reading and filtering(Upstream Sources) versions...";
+                                  currentArtefact = $"Found {skip} artefacts, reading and filtering(Upstream Sources) versions...";
                               }
                               else
                               {
-                                  _CurrentArtefact = $"Found {skip} artefacts, reading versions...";
+                                  currentArtefact = $"Found {skip} artefacts, reading versions...";
                               }
                               foreach (PackageValue itempkg in Details.value)
                               {
                                   using HttpResponseMessage responsever = await httpClient.GetAsync(itempkg._links.versions.href, StopApp);
                                   if (responsever.StatusCode != HttpStatusCode.OK)
                                   {
-                                      throw new Exception($"{(int)responsever.StatusCode}:{responsever.StatusCode}");
+                                      throw new HttpRequestException($"{(int)responsever.StatusCode}:{responsever.StatusCode}");
                                   }
                                   string result = await responsever.Content.ReadAsStringAsync(StopApp);
                                   PackageVersionRoot? versiondetail = JsonSerializer.Deserialize<PackageVersionRoot>(result);
@@ -100,12 +85,12 @@ namespace PackagesTransfer.Prompts
                                                   found = true;
                                                   pkgcounts++;
                                               }
-                                              resultpkg.Add(new PackageInfo { Protocol = protocol, Id = itempkg.normalizedName, Version = item.normalizedVersion, FileName = $"{itempkg.normalizedName}.v{item.normalizedVersion}{sufixfile}" });
+                                              resultpkg.Add(new PackageInfo { Protocol = protocol, Id = itempkg.normalizedName, Version = item.normalizedVersion, FileName = $"{itempkg.normalizedName}.v{item.normalizedVersion}{defsufix}" });
                                           }
                                       }
                                       else
                                       {
-                                          resultpkg.Add(new PackageInfo { Protocol = protocol, Id = itempkg.normalizedName, Version = item.normalizedVersion, FileName = $"{itempkg.normalizedName}.v{item.normalizedVersion}{sufixfile}" });
+                                          resultpkg.Add(new PackageInfo { Protocol = protocol, Id = itempkg.normalizedName, Version = item.normalizedVersion, FileName = $"{itempkg.normalizedName}.v{item.normalizedVersion}{defsufix}" });
                                       }
                                   }
                               }

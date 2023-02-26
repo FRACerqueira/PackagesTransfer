@@ -34,7 +34,7 @@ namespace PackagesTransfer.Protocols.Npm
                                 Id = info.name,
                                 Version = info.version,
                                 FileName = new FileInfo(pathfile).Name,
-                                Protocol = FeedTransferConstants.NameNpmProtocol
+                                Protocol = ProtocolsTransferConstant.NameNpmProtocol
                             };
                         }
                         break;
@@ -221,21 +221,21 @@ namespace PackagesTransfer.Protocols.Npm
                 string uriregistry;
                 if (feedDataInfo.Seleted!.project != null && feedDataInfo.Seleted!.project!.name! != null)
                 {
-                    targetFeedcfg = FeedTransferConstants.UriNmpPackagebaseScopedPush
+                    targetFeedcfg = ProtocolsTransferConstant.UriNmpPackagebaseScopedPush
                        .Replace("{baseorg}", AzureDevopsPrefixWidthoutProtocol(feedDataInfo.Uribase, feedDataInfo.Prefixuripkg), StringComparison.InvariantCultureIgnoreCase)
                        .Replace("{projectname}", feedDataInfo.Seleted!.project!.name, StringComparison.InvariantCultureIgnoreCase)
                        .Replace("{feedname}", feedDataInfo.Seleted!.name!, StringComparison.InvariantCultureIgnoreCase);
-                    uriregistry = FeedTransferConstants.UriNmpPackagebaseScopedPush
+                    uriregistry = ProtocolsTransferConstant.UriNmpPackagebaseScopedPush
                      .Replace("{baseorg}", AzureDevopsPrefix(feedDataInfo.Uribase, feedDataInfo.Prefixuripkg), StringComparison.InvariantCultureIgnoreCase)
                      .Replace("{projectname}", feedDataInfo.Seleted!.project!.name, StringComparison.InvariantCultureIgnoreCase)
                      .Replace("{feedname}", feedDataInfo.Seleted!.name!, StringComparison.InvariantCultureIgnoreCase);
                 }
                 else
                 {
-                    targetFeedcfg = FeedTransferConstants.UriNmpPackagebasePush
+                    targetFeedcfg = ProtocolsTransferConstant.UriNmpPackagebasePush
                        .Replace("{baseorg}", AzureDevopsPrefixWidthoutProtocol(feedDataInfo.Uribase, feedDataInfo.Prefixuripkg), StringComparison.InvariantCultureIgnoreCase)
                        .Replace("{feedname}", feedDataInfo.Seleted!.name!, StringComparison.InvariantCultureIgnoreCase);
-                    uriregistry = FeedTransferConstants.UriNmpPackagebasePush
+                    uriregistry = ProtocolsTransferConstant.UriNmpPackagebasePush
                        .Replace("{baseorg}", AzureDevopsPrefix(feedDataInfo.Uribase, feedDataInfo.Prefixuripkg), StringComparison.InvariantCultureIgnoreCase)
                        .Replace("{feedname}", feedDataInfo.Seleted!.name!, StringComparison.InvariantCultureIgnoreCase);
                 }

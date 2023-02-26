@@ -27,14 +27,14 @@ namespace PackagesTransfer.Prompts
                   {
                       aux = aux[..^1];
                   }
-                  string feedlisturl = FeedTransferConstants.UriFeedList.Replace("{baseorg}", aux, StringComparison.InvariantCultureIgnoreCase);
+                  string feedlisturl = ProtocolsTransferConstant.UriFeedList.Replace("{baseorg}", aux, StringComparison.InvariantCultureIgnoreCase);
 
                   try
                   {
                       using HttpResponseMessage response = await httpClient.GetAsync(feedlisturl, StopApp);
                       if (response.StatusCode != HttpStatusCode.OK)
                       {
-                          return Task.FromResult<object>(new FeedsRoot() { Exception = new Exception($"{(int)response.StatusCode}:{response.StatusCode}") });
+                          return Task.FromResult<object>(new FeedsRoot() { Exception = new HttpRequestException($"{(int)response.StatusCode}:{response.StatusCode}") });
                       }
                       string result = await response.Content.ReadAsStringAsync(StopApp);
                       FeedsRoot? Details = JsonSerializer.Deserialize<FeedsRoot>(result);

@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "FeedTransferPlus": {
+    "PackagesTransfer": {
       "commandName": "Project"
     }
   }

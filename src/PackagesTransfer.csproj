@@ -24,7 +24,7 @@
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
 		<PackageReference Include="NuGet.Protocol" Version="6.5.0" />
-		<PackageReference Include="PromptPlus" Version="3.3.2" />
+		<PackageReference Include="PromptPlus" Version="3.3.3" />
 		<PackageReference Include="Serilog.Extensions.Logging.File" Version="3.0.0" />
 	</ItemGroup>
 

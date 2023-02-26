@@ -50,14 +50,14 @@ namespace PackagesTransfer.Prompts
 
                 prefixfeed = SelectUriPrefix(origin,
                     "Prefix feed-sub-domain Uri",
-                    $"Ex: {AzureDevopsPrefix(uribase, FeedTransferConstants.NamePrefixfeeds,_logger)}",
+                    $"Ex: {AzureDevopsPrefix(uribase, ProtocolsTransferConstant.ExamplePrefixfeeds,_logger)}",
                     prefixfeed,
                     defaultsettings,
                     stoppingToken);
 
                 prefixpkg = SelectUriPrefix(origin,
                     "Prefix package-sub-domain Uri",
-                    $"Ex: {AzureDevopsPrefix(uribase, FeedTransferConstants.NamePrefixpkgs,_logger)}",
+                    $"Ex: {AzureDevopsPrefix(uribase, ProtocolsTransferConstant.ExamplePrefixpkgs,_logger)}",
                     prefixpkg,
                     defaultsettings,
                     stoppingToken);
@@ -120,21 +120,36 @@ namespace PackagesTransfer.Prompts
                     string readsource;
                     if (seletedfeed.project == null)
                     {
-                        readsource = FeedTransferConstants.UriPackageList
+                        readsource = ProtocolsTransferConstant.UriPackageList
                             .Replace("{baseorg}", AzureDevopsPrefix(uribase, prefixpkg, _logger), StringComparison.InvariantCultureIgnoreCase)
                             .Replace("{feedname}", seletedfeed.name, StringComparison.InvariantCultureIgnoreCase)
                             .Replace("{filtertype}", item, StringComparison.InvariantCultureIgnoreCase);
                     }
                     else
                     {
-                        readsource = FeedTransferConstants.UriPackageScopedList
+                        readsource = ProtocolsTransferConstant.UriPackageScopedList
                             .Replace("{baseorg}", AzureDevopsPrefix(uribase, prefixpkg, _logger), StringComparison.InvariantCultureIgnoreCase)
                             .Replace("{projectname}", seletedfeed.project.name, StringComparison.InvariantCultureIgnoreCase)
                             .Replace("{feedname}", seletedfeed.name, StringComparison.InvariantCultureIgnoreCase)
                             .Replace("{filtertype}", item, StringComparison.InvariantCultureIgnoreCase);
                     }
 
-                    var itempackageread = AzureReadPackges(item, denyupstream,
+                    var defsufix = string.Empty;
+                    if (item == ProtocolsTransferConstant.NameNugetProtocol)
+                    {
+                        defsufix = defaultsettings.sufixnuget.Split(";", StringSplitOptions.RemoveEmptyEntries)[0];
+                    }
+                    else if (item == ProtocolsTransferConstant.NameNpmProtocol)
+                    {
+                        defsufix = defaultsettings.sufixnpm.Split(";", StringSplitOptions.RemoveEmptyEntries)[0];
+                    }
+                    else
+                    {
+                        _logger?.LogError($"Not Implemented Sufix protocol {item}");
+                        throw new NotImplementedException($"Sufix protocol {item}");
+                    }
+
+                    var itempackageread = AzureReadPackges(item,defsufix, denyupstream,
                         httpClient,
                         defaultsettings.takequery,
                         readsource,

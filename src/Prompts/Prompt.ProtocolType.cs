@@ -19,7 +19,7 @@ namespace PackagesTransfer.Prompts
             var defvalue = usersettings.filterProtocoltype.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList();
             if (!statusProtocols.EnabledNpm)
             {
-                var index = defvalue.IndexOf(FeedTransferConstants.NameNpmProtocol);
+                var index = defvalue.IndexOf(ProtocolsTransferConstant.NameNpmProtocol);
                 if (index != -1) 
                 {
                     defvalue.RemoveAt(index);
@@ -28,10 +28,10 @@ namespace PackagesTransfer.Prompts
 
             var aux = PromptPlus
                 .MultiSelect<string>("Protocol type filters")
-                .AddItems(FeedTransferConstants.NamesProtocol)
-                .DisableItem(!statusProtocols.EnabledNpm ? FeedTransferConstants.NameNpmProtocol : "")
+                .AddItems(ProtocolsTransferConstant.NamesProtocol)
+                .DisableItem(!statusProtocols.EnabledNpm ? ProtocolsTransferConstant.NameNpmProtocol : "")
                 .AddDefaults(defvalue)
-                .Range(1, FeedTransferConstants.NamesProtocol.Length)
+                .Range(1, ProtocolsTransferConstant.NamesProtocol.Length)
                 .Run(cancellationToken);
             if (aux.IsAborted)
             {

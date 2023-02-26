@@ -80,18 +80,26 @@ namespace PackagesTransfer.Prompts
                 {
                     var msg = $"Invalid origin{origin} in SelectPathOrigint";
                     _logger?.LogError(msg);
-                    throw new Exception(msg);
+                    throw new NotImplementedException(msg);
                 }
                 var extprotocol = "";
                 foreach (var item in usersettings.filterProtocoltype.Split(';', StringSplitOptions.RemoveEmptyEntries))
                 {
-                    if (item == FeedTransferConstants.NameNugetProtocol)
+                    if (item == ProtocolsTransferConstant.NameNugetProtocol)
                     {
-                        extprotocol += "*" + FeedTransferConstants.SufixNugetProtocol + ";";
+                        foreach (var sufixitem in defaultsettings.sufixnuget.Split(";", StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            extprotocol += "*" + sufixitem + ";";
+
+                        }
                     }
-                    else if (item == FeedTransferConstants.NameNpmProtocol)
+                    else if (item == ProtocolsTransferConstant.NameNpmProtocol)
                     {
-                        extprotocol += "*" + FeedTransferConstants.SufixNpmProtocol + ";";
+                        foreach (var sufixitem in defaultsettings.sufixnpm.Split(";", StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            extprotocol += "*" + sufixitem + ";";
+
+                        }
                     }
                 }
                 if (extprotocol.Length == 0)
@@ -144,7 +152,7 @@ namespace PackagesTransfer.Prompts
                             {
                                 try
                                 {
-                                    if (usersettings.filterProtocoltype.Contains(FeedTransferConstants.NameNugetProtocol) && item.EndsWith(FeedTransferConstants.SufixNugetProtocol))
+                                    if (usersettings.filterProtocoltype.Contains(ProtocolsTransferConstant.NameNugetProtocol) && IsValidSufix(item,defaultsettings.sufixnuget))
                                     {
                                         try
                                         {
@@ -152,23 +160,23 @@ namespace PackagesTransfer.Prompts
                                             if (auxpkg != null)
                                             {
                                                 aux.Add(auxpkg);
-                                                if (!distintIdpkg.Any(x => x == $"{auxpkg.Id}{FeedTransferConstants.NameNugetProtocol}"))
+                                                if (!distintIdpkg.Any(x => x == $"{auxpkg.Id}{ProtocolsTransferConstant.NameNugetProtocol}"))
                                                 {
-                                                    distintIdpkg.Add($"{auxpkg.Id}{FeedTransferConstants.NameNugetProtocol}");
+                                                    distintIdpkg.Add($"{auxpkg.Id}{ProtocolsTransferConstant.NameNugetProtocol}");
                                                 }
                                             }
                                             else
                                             {
-                                                _logger?.LogError($"Invalid {FeedTransferConstants.NameNugetProtocol} {item}. Not found ID or Version");
+                                                _logger?.LogError($"Invalid {ProtocolsTransferConstant.NameNugetProtocol} {item}. Not found ID or Version");
                                             }
                                         }
                                         catch (Exception ex)
                                         {
-                                            _logger?.LogError($"Invalid {FeedTransferConstants.NameNugetProtocol} {item}. {ex}");
+                                            _logger?.LogError($"Invalid {ProtocolsTransferConstant.NameNugetProtocol} {item}. {ex}");
                                         }
 
                                     }
-                                    if (usersettings.filterProtocoltype.Contains(FeedTransferConstants.NameNpmProtocol) && item.EndsWith(FeedTransferConstants.SufixNpmProtocol))
+                                    if (usersettings.filterProtocoltype.Contains(ProtocolsTransferConstant.NameNpmProtocol) && IsValidSufix(item, defaultsettings.sufixnpm))
                                     {
                                         try
                                         {
@@ -176,19 +184,19 @@ namespace PackagesTransfer.Prompts
                                             if (auxpkg != null)
                                             {
                                                 aux.Add(auxpkg);
-                                                if (!distintIdpkg.Any(x => x == $"{auxpkg.Id}{FeedTransferConstants.NameNpmProtocol}"))
+                                                if (!distintIdpkg.Any(x => x == $"{auxpkg.Id}{ProtocolsTransferConstant.NameNpmProtocol}"))
                                                 {
-                                                    distintIdpkg.Add($"{auxpkg.Id}{FeedTransferConstants.NameNpmProtocol}");
+                                                    distintIdpkg.Add($"{auxpkg.Id}{ProtocolsTransferConstant.NameNpmProtocol}");
                                                 }
                                             }
                                             else
                                             {
-                                                _logger?.LogError($"Invalid {FeedTransferConstants.NameNpmProtocol} {item}. Not found name or Version");
+                                                _logger?.LogError($"Invalid {ProtocolsTransferConstant.NameNpmProtocol} {item}. Not found name or Version");
                                             }
                                         }
                                         catch (Exception ex)
                                         {
-                                            _logger?.LogError($"Invalid {FeedTransferConstants.NameNpmProtocol} {item}. {ex}");
+                                            _logger?.LogError($"Invalid {ProtocolsTransferConstant.NameNpmProtocol} {item}. {ex}");
                                         }
                                     }
                                 }
@@ -245,6 +253,13 @@ namespace PackagesTransfer.Prompts
             {
                 IEnumerable<string> subfolders = Directory.EnumerateDirectories(path);
                 return subfolders.Count();
+            }
+
+            static bool IsValidSufix(string file, string sufixs)
+            {
+                return sufixs
+                    .Split(";", StringSplitOptions.RemoveEmptyEntries)
+                    .Any(x => file.ToLower().EndsWith(x.ToLower()));
             }
 
             static IEnumerable<string> LoadSubDirs(int deep, string path)

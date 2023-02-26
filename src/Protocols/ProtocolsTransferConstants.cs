@@ -1,6 +1,6 @@
 ﻿namespace PackagesTransfer.Protocols;
 
-internal static class FeedTransferConstants
+internal static class ProtocolsTransferConstant
 {
     public const string UriFeedList = "{baseorg}/_apis/packaging/feeds";
 
@@ -18,13 +18,11 @@ internal static class FeedTransferConstants
     public const string UriNmpPackagebasePush = "{baseorg}/_packaging/{feedname}/npm/";
     public const string UriNmpPackagebaseScopedPush = "{baseorg}/{projectname}/_packaging/{feedname}/npm/";
 
+    public const string NameTempFolder = "TransferTmp";
     public const string NameNugetProtocol = "Nuget";
     public const string NameNpmProtocol = "Npm";
-    public const string NamePrefixfeeds = "feeds";
-    public const string NamePrefixpkgs = "pkgs";
-    public const string SufixNugetProtocol = ".nupkg";
-    public const string SufixNpmProtocol = ".tgz";
-    public const string NameTempFolder = "TransferTmp";
+    public const string ExamplePrefixfeeds = "feeds";
+    public const string ExamplePrefixpkgs = "pkgs";
 
     public static string[] NamesProtocol => new string[] { NameNugetProtocol, NameNpmProtocol };
 
