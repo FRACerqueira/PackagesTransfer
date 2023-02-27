@@ -19,7 +19,7 @@ namespace PackagesTransfer.Prompts
     {
         public async Task<ProcessTransfer> TransferPackages(HttpClient httpClient, FeedDataInfo source, FeedDataInfo target, Usersettings usersettings, Defaultsettings defaultsettings, CancellationToken stoppingToken)
         {
-            var IsEmptyUserCredential = false;
+            var emptyusercred = false;
             List<PackageInfo> publishsource;
             string publishprotocol;
             string? npmregistry;
@@ -357,11 +357,12 @@ namespace PackagesTransfer.Prompts
                         {
                             Credentials = new PackageSourceCredential(
                             source: targetFeed,
-                            username: IsEmptyUserCredential ? "" : target.Seleted!.name!, // not important - any value
+                            username: emptyusercred?"":target.Seleted!.name!, // not important - any value
                             passwordText: target.Passsword,
                             isPasswordClearText: true,
                             validAuthenticationTypesText: null)
                         };
+                        var conflit = false;
                         try
                         {
                             SourceRepository repository;
@@ -385,43 +386,76 @@ namespace PackagesTransfer.Prompts
                                     symbolPackageUpdateResource: null,
                                     new NuGet.Common.NullLogger());
                             }
-                            catch (Exception) //bug ? try with empty value!
+                            catch (HttpRequestException ex)
                             {
-                                IsEmptyUserCredential = true;
-                                packageSource = new PackageSource(targetFeed)
+                                if (ex.StatusCode == HttpStatusCode.Conflict)
                                 {
-                                    Credentials = new PackageSourceCredential(
-                                    source: targetFeed,
-                                    username: "", // try with empty value!
-                                    passwordText: target.Passsword,
-                                    isPasswordClearText: true,
-                                    validAuthenticationTypesText: null)
-                                };
-                                repository = Repository.Factory.GetCoreV3(packageSource);
-                                resource = await repository.GetResourceAsync<PackageUpdateResource>(cancellationToken);
-                                await resource.Push(
-                                    new string[] { pathdownload },
-                                    symbolSource: null,
-                                    timeoutInSecond: defaultsettings.timeoutpush,
-                                    disableBuffering: false,
-                                    getApiKey: packageSource =>
+                                    conflit = true;
+                                    pkg.ResumeInfo = $"{(int)HttpStatusCode.Conflict}:{HttpStatusCode.Conflict}";
+                                }
+                                else if (ex.StatusCode == HttpStatusCode.Unauthorized) //bug ? try with empty value!
+                                {
+                                    packageSource = new PackageSource(targetFeed)
                                     {
-                                        return "az"; //any value
-                                    },
-                                    getSymbolApiKey: packageSource => null,
-                                    noServiceEndpoint: false,
-                                    skipDuplicate: false,
-                                    symbolPackageUpdateResource: null,
-                                    new NuGet.Common.NullLogger());
+                                        Credentials = new PackageSourceCredential(
+                                        source: targetFeed,
+                                        username: "", // try with empty value!
+                                        passwordText: target.Passsword,
+                                        isPasswordClearText: true,
+                                        validAuthenticationTypesText: null)
+                                    };
+                                    repository = Repository.Factory.GetCoreV3(packageSource);
+                                    resource = await repository.GetResourceAsync<PackageUpdateResource>(cancellationToken);
+                                    await resource.Push(
+                                        new string[] { pathdownload },
+                                        symbolSource: null,
+                                        timeoutInSecond: defaultsettings.timeoutpush,
+                                        disableBuffering: false,
+                                        getApiKey: packageSource =>
+                                        {
+                                            return "az"; //any value
+                                        },
+                                        getSymbolApiKey: packageSource => null,
+                                        noServiceEndpoint: false,
+                                        skipDuplicate: false,
+                                        symbolPackageUpdateResource: null,
+                                        new NuGet.Common.NullLogger());
+                                    emptyusercred = true;
+                                }
+                                else
+                                {
+                                    throw;
+                                }
                             }
-                            resumePublishOk.Add(pkg);
-                            if (!newItemExport.Contains(pkg.Id))
+                            if (!conflit)
                             {
-                                newItemExport.Add(pkg.Id);
+                                resumePublishOk.Add(pkg);
+                                if (!newItemExport.Contains(pkg.Id))
+                                {
+                                    newItemExport.Add(pkg.Id);
+                                }
                             }
+                            else
+                            {
+                                resumePublishErr.Add(pkg);
+                            }
+                        }
+                        catch (HttpRequestException ex)
+                        {
+                            _logger.LogError(ex.ToString());
+                            if (ex.StatusCode == HttpStatusCode.Conflict)
+                            {
+                                pkg.ResumeInfo = $"{(int)HttpStatusCode.Conflict}:{HttpStatusCode.Conflict}";
+                            }
+                            else
+                            {
+                                pkg.ResumeInfo = $"{(int)ex.StatusCode}{ex.StatusCode}";
+                            }
+                            resumePublishErr.Add(pkg);
                         }
                         catch (Exception ex)
                         {
+                            _logger.LogError(ex.ToString());
                             pkg.ResumeInfo = ex.Message;
                             resumePublishErr.Add(pkg);
                         }
