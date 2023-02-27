@@ -14,7 +14,10 @@
 
 ## Snapshot
 
+### Exemple 1
 ![](./docs/images/snapshot.png)
+### Exemple 2
+![](./docs/images/snapshot1.png)
 
 ## Features
 [**Top**](#welcome-to-packagestransfer)
