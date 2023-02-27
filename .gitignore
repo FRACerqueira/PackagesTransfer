@@ -354,3 +354,5 @@ MigrationBackup/
 /src/Windows64Exe/PackagesTransfer.exe
 /src/Windows64Exe/usersettings.json
 /src/Linux64Exe/usersettings.json
+/src/Linux64Exe/Linux64.zip
+/src/Windows64Exe/Windows64.zip
