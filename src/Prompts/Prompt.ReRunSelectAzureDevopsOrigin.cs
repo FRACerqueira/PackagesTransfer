@@ -37,20 +37,21 @@ namespace PackagesTransfer.Prompts
 
                 }
                 packageread = new ProcessReadPackges();
+                var tryagain = false;
                 foreach (var item in protocols)
                 {
                     string readsource;
                     if (seletedfeed.project == null)
                     {
                         readsource = ProtocolsTransferConstant.UriPackageList
-                            .Replace("{baseorg}", AzureDevopsPrefix(dataInfo.Uribase, dataInfo.Prefixuripkg, _logger), StringComparison.InvariantCultureIgnoreCase)
+                            .Replace("{baseorg}", AzureDevopsPrefix(dataInfo.Uribase, dataInfo.Prefixurifeed, _logger), StringComparison.InvariantCultureIgnoreCase)
                             .Replace("{feedname}", seletedfeed.name, StringComparison.InvariantCultureIgnoreCase)
                             .Replace("{filtertype}", item, StringComparison.InvariantCultureIgnoreCase);
                     }
                     else
                     {
                         readsource = ProtocolsTransferConstant.UriPackageScopedList
-                            .Replace("{baseorg}", AzureDevopsPrefix(dataInfo.Uribase, dataInfo.Prefixuripkg, _logger), StringComparison.InvariantCultureIgnoreCase)
+                            .Replace("{baseorg}", AzureDevopsPrefix(dataInfo.Uribase, dataInfo.Prefixurifeed, _logger), StringComparison.InvariantCultureIgnoreCase)
                             .Replace("{projectname}", seletedfeed.project.name, StringComparison.InvariantCultureIgnoreCase)
                             .Replace("{feedname}", seletedfeed.name, StringComparison.InvariantCultureIgnoreCase)
                             .Replace("{filtertype}", item, StringComparison.InvariantCultureIgnoreCase);
@@ -77,11 +78,26 @@ namespace PackagesTransfer.Prompts
                         dataInfo.Passsword,
                         "Reading packages", "", stoppingToken);
 
+                    if (itempackageread.ErrorMessage != null)
+                    {
+                        tryagain = Question("Try again", itempackageread.ErrorMessage!, true, stoppingToken);
+                        _logger?.LogInformation($"Try again: {tryagain}");
+                        if (!tryagain)
+                        {
+                            ExitTanks(0);
+                        }
+                        break;
+                    }
+
                     var newpkg = packageread.Packages.ToList();
                     newpkg.AddRange(itempackageread.Packages);
 
                     packageread.DistinctQtd += itempackageread.DistinctQtd;
                     packageread.Packages = newpkg.ToArray();
+                }
+                if (tryagain)
+                {
+                    continue;
                 }
                 break;
             }

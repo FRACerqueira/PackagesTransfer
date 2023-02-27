@@ -78,9 +78,9 @@ namespace PackagesTransfer.Prompts
                 if (aux.Exception != null)
                 {
                     _logger?.LogError($"Error retrieve list of feeds: {aux.Exception}");
-                    var tryanother = Question("Try again", aux.Exception.Message, true, stoppingToken);
-                    _logger?.LogInformation($"Try again: {tryanother}");
-                    if (!tryanother)
+                    var q = Question("Try again", aux.Exception.Message, true, stoppingToken);
+                    _logger?.LogInformation($"Try again: {q}");
+                    if (!q)
                     {
                         ExitTanks(0);
                     }
@@ -115,20 +115,21 @@ namespace PackagesTransfer.Prompts
 
                 }
                 packageread = new ProcessReadPackges();
+                var tryagain = false;
                 foreach (var item in protocols)
                 {
                     string readsource;
                     if (seletedfeed.project == null)
                     {
                         readsource = ProtocolsTransferConstant.UriPackageList
-                            .Replace("{baseorg}", AzureDevopsPrefix(uribase, prefixpkg, _logger), StringComparison.InvariantCultureIgnoreCase)
+                            .Replace("{baseorg}", AzureDevopsPrefix(uribase, prefixfeed, _logger), StringComparison.InvariantCultureIgnoreCase)
                             .Replace("{feedname}", seletedfeed.name, StringComparison.InvariantCultureIgnoreCase)
                             .Replace("{filtertype}", item, StringComparison.InvariantCultureIgnoreCase);
                     }
                     else
                     {
                         readsource = ProtocolsTransferConstant.UriPackageScopedList
-                            .Replace("{baseorg}", AzureDevopsPrefix(uribase, prefixpkg, _logger), StringComparison.InvariantCultureIgnoreCase)
+                            .Replace("{baseorg}", AzureDevopsPrefix(uribase, prefixfeed, _logger), StringComparison.InvariantCultureIgnoreCase)
                             .Replace("{projectname}", seletedfeed.project.name, StringComparison.InvariantCultureIgnoreCase)
                             .Replace("{feedname}", seletedfeed.name, StringComparison.InvariantCultureIgnoreCase)
                             .Replace("{filtertype}", item, StringComparison.InvariantCultureIgnoreCase);
@@ -156,15 +157,30 @@ namespace PackagesTransfer.Prompts
                         password,
                         $"Reading packages {item}", "", stoppingToken);
 
+                    if (itempackageread.ErrorMessage != null) 
+                    {
+                        tryagain = Question("Try again", itempackageread.ErrorMessage!, true, stoppingToken);
+                        _logger?.LogInformation($"Try again: {tryagain}");
+                        if (!tryagain)
+                        {
+                            ExitTanks(0);
+                        }
+                        break;
+                    }
+
                     var newpkg = packageread.Packages.ToList();
                     newpkg.AddRange(itempackageread.Packages);
 
                     packageread.DistinctQtd += itempackageread.DistinctQtd;
                     packageread.Packages = newpkg.ToArray();
                 }
-
+                if (tryagain)
+                {
+                    continue;
+                }
                 break;
             }
+
 
             _logger?.LogInformation($"AzureReadPackges {origin} uribase : {uribase}");
             _logger?.LogInformation($"AzureReadPackges {origin} prefix feed: {prefixfeed}");
@@ -184,7 +200,7 @@ namespace PackagesTransfer.Prompts
             {
                 Uribase = uribase,
                 Prefixurifeed = prefixfeed,
-                Prefixuripkg = prefixfeed,
+                Prefixuripkg = prefixpkg,
                 Passsword = password,
                 Feeds = feeds,
                 Seleted = seletedfeed,

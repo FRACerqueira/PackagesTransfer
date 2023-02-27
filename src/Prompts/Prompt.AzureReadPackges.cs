@@ -45,7 +45,10 @@ namespace PackagesTransfer.Prompts
                               {
                                   if (responsepkg.StatusCode != HttpStatusCode.OK)
                                   {
-                                      throw new HttpRequestException($"{(int)responsepkg.StatusCode}:{responsepkg.StatusCode}");
+                                      return Task.FromResult<object>(new ProcessReadPackges
+                                      {
+                                          ErrorMessage = $"{(int)responsepkg.StatusCode}:{responsepkg.StatusCode}"
+                                      });
                                   }
                                   string result = await responsepkg.Content.ReadAsStringAsync(StopApp);
                                   Details = JsonSerializer.Deserialize<PackageRoot>(result);
@@ -65,7 +68,10 @@ namespace PackagesTransfer.Prompts
                                   using HttpResponseMessage responsever = await httpClient.GetAsync(itempkg._links.versions.href, StopApp);
                                   if (responsever.StatusCode != HttpStatusCode.OK)
                                   {
-                                      throw new HttpRequestException($"{(int)responsever.StatusCode}:{responsever.StatusCode}");
+                                      return Task.FromResult<object>(new ProcessReadPackges
+                                      {
+                                          ErrorMessage = $"{(int)responsever.StatusCode}:{responsever.StatusCode}"
+                                      });
                                   }
                                   string result = await responsever.Content.ReadAsStringAsync(StopApp);
                                   PackageVersionRoot? versiondetail = JsonSerializer.Deserialize<PackageVersionRoot>(result);
@@ -109,7 +115,10 @@ namespace PackagesTransfer.Prompts
                   catch (Exception ex)
                   {
                       _logger?.LogError($"Error on AzureReadPackges: {ex}");
-                      throw;
+                      return Task.FromResult<object>(new ProcessReadPackges
+                      {
+                          ErrorMessage = $"Error:{ex.Message}"
+                      });
                   }
               }, processTextResult: (x) => ""))
               .Run(cancellationToken);

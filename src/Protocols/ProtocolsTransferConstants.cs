@@ -4,8 +4,8 @@ internal static class ProtocolsTransferConstant
 {
     public const string UriFeedList = "{baseorg}/_apis/packaging/feeds";
 
-    public const string UriPackageList = "{baseorg}/_apis/packaging/Feeds/{feedname}/packages?$top={top}&$skip={skip}&protocolType={filtertype}";
-    public const string UriPackageScopedList = "{baseorg}/{projectname}/_apis/packaging/Feeds/{feedname}/packages?$top={top}&$skip={skip}&protocolType={filtertype}";
+    public const string UriPackageList = "{baseorg}/_apis/packaging/feeds/{feedname}/packages?$top={top}&$skip={skip}&protocolType={filtertype}";
+    public const string UriPackageScopedList = "{baseorg}/{projectname}/_apis/packaging/feeds/{feedname}/packages?$top={top}&$skip={skip}&protocolType={filtertype}";
 
     public const string UriNugetPackageDownload = "{baseorg}/_apis/packaging/feeds/{feedname}/nuget/packages/{pkgname}/versions/{pkgver}/content";
     public const string UriNugetPackageScopedDownload = "{baseorg}/{projectname}/_apis/packaging/feeds/{feedname}/nuget/packages/{pkgname}/versions/{pkgver}/content";
