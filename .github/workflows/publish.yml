@@ -23,3 +23,27 @@ jobs:
 
     - name: Publish linux
       run: dotnet publish -p:PublishProfile=FolderLinux64Profile
+
+    - name: Zip Folder windows
+      run: zip -r /home/runner/work/PackagesTransfer/Windows64Exe.zip /home/runner/work/PackagesTransfer/PackagesTransfer/src/Windows64Exe
+
+    - name: Zip Folder linux
+      run: zip -r /home/runner/work/PackagesTransfer/Linux64Exe.zip /home/runner/work/PackagesTransfer/PackagesTransfer/src/Linux64Exe
+
+   - name: Release zip windows
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files:/home/runner/work/PackagesTransfer/Windows64Exe.zip	      
+
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+   - name: Release zip linux
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files:/home/runner/work/PackagesTransfer/Linux64Exe.zip	      
+
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
