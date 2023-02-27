@@ -35,7 +35,7 @@
     - File System to Azure-devops
     - Azure-devops to File System
 
-- Option to exclude packages by Upstream-Source
+- Option to skip packages by Upstream-Source
 
 - Shows in advance the count of distinct and versioned packages by protocol type
 
