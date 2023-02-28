@@ -31,7 +31,7 @@ jobs:
       run: zip -r Linux64.zip ./src/Linux64Exe
       
     - name: Get Tag 
-    - uses: olegtarasov/get-tag@v2.1.2
+      uses: olegtarasov/get-tag@v2.1.2
       id: tagName
       
     - name: Upload Release Asset windows
