@@ -9,7 +9,6 @@ env:
   
 jobs:
   publish:
-    if: contains(github.ref, 'tags/v') # works only version tagged
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
