@@ -9,6 +9,7 @@ env:
   
 jobs:
   publish:
+    if: contains(github.ref, 'tags/v') # works only version tagged
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -30,6 +31,12 @@ jobs:
     - name: Zip Folder linux
       run: zip -r Linux64.zip ./src/Linux64Exe
 
+    - name: Get Releasetag version
+      id: get_release_info
+      run: echo ::set-output name=file_name::v${TAG_REF_NAME##*/v}  value=`cat release_url.txt` echo ::set-output name=upload_url::$value
+      env:
+        TAG_REF_NAME: ${{ github.ref }}
+        
     - name: Upload Release Asset windows
       id: upload-release-assetwindows 
       uses: actions/upload-release-asset@v1.0.1
