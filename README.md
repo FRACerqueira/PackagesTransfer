@@ -5,7 +5,7 @@
 
 **Interactive command-line to transfer packages between source to target with protocols Nuget and Npm.**
 
-## Download V.1.0.0
+## Download Runtime artefact
 
 - [Click here for Windows-X64 plataform](https://github.com/FRACerqueira/PackagesTransfer/releases/latest/download/Runtime-Windows64.zip) 
     - Extract the files in a folder and then run "./PackagesTransfer.exe" 
