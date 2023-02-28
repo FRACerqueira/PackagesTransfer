@@ -44,10 +44,10 @@ jobs:
       with:
         upload_url: ${{ steps.get_release.outputs.upload_url }}
         asset_path: ./Windows64.zip
-        asset_name: Windows64.zip
+        asset_name: Runtime-Windows64.zip
         asset_content_type: application/zip
 
-    - name: Upload Release Asset windows artefacts
+    - name: Upload Release Asset linux artefacts
       id: upload-release-asset-linux
       uses: actions/upload-release-asset@v1
       env:
@@ -55,5 +55,5 @@ jobs:
       with:
         upload_url: ${{ steps.get_release.outputs.upload_url }}
         asset_path: ./Linux64.zip
-        asset_name: Linux64.zip
+        asset_name: Runtime-Linux64.zip
         asset_content_type: application/zip
