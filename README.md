@@ -6,10 +6,10 @@
 
 ## Download V.1.0.0
 
-- [Click here for Windows-X64 plataform](https://github.com/FRACerqueira/PackagesTransfer/releases/latest/download/Windows64.zip) 
+- [Click here for Windows-X64 plataform](https://github.com/FRACerqueira/PackagesTransfer/releases/latest/download/Runtime-Windows64.zip) 
     - Extract the files in a folder and then run "./PackagesTransfer.exe" 
 
-- [Click here for Linux-X64 plataform](https://github.com/FRACerqueira/PackagesTransfer/releases/latest/download/Linux64.zip) 
+- [Click here for Linux-X64 plataform](https://github.com/FRACerqueira/PackagesTransfer/releases/latest/download/Runtime-Linux64.zip) 
     - Extract the files in a folder and then run "./PackagesTransfer" 
 
 ## Snapshot
