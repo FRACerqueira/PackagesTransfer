@@ -30,16 +30,18 @@ jobs:
     - name: Zip Folder linux
       run: zip -r Linux64.zip ./src/Linux64Exe
       
-    - name: Get Tag 
-      uses: olegtarasov/get-tag@v2.1.2
-      id: tagName
-      
+    - name: Get release
+      id: get_release
+      uses: bruceadams/get-release@v1.3.2
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+          
     - name: Upload Release Asset windows
       uses: actions/upload-release-asset@v1.0.1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: $GIT_TAG_NAME
+        upload_url: ${{ steps.get_release.outputs.upload_url }}
         asset_path: ./Windows64.zip
         asset_name: Windows64.zip
         asset_content_type: application/zip
@@ -49,7 +51,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: $GIT_TAG_NAME
+        upload_url: ${{ steps.get_release.outputs.upload_url }}
         asset_path: ./Linux64.zip
         asset_name: Linux64.zip
         asset_content_type: application/zip
