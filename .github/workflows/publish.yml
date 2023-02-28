@@ -36,22 +36,24 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ github.token }}
           
-    - name: Upload Release Asset windows
-      uses: actions/upload-release-asset@v1.0.1
+    - name: Upload Release Asset windows artefacts
+      id: upload-release-asset-windows 
+      uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.get_release.outputs.upload_url }}
-        asset_path: Windows64.zip
-        asset_name: Runtime.Windows.x64
+        asset_path: ./Windows64.zip
+        asset_name: Windows64.zip
         asset_content_type: application/zip
 
-    - name: Upload Release Asset linux
-      uses: actions/upload-release-asset@v1.0.2
+    - name: Upload Release Asset windows artefacts
+      id: upload-release-asset-linux
+      uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.get_release.outputs.upload_url }}
-        asset_path: Linux64.zip
-        asset_name: Runtime.Linux.x64
+        asset_path: ./Linux64.zip
+        asset_name: Linux64.zip
         asset_content_type: application/zip
