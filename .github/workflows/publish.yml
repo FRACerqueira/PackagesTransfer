@@ -42,16 +42,16 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.get_release.outputs.upload_url }}
-        asset_path: ./Windows64.zip
-        asset_name: Windows64.zip
+        asset_path: Windows64.zip
+        asset_name: Runtime.Windows.x64
         asset_content_type: application/zip
 
     - name: Upload Release Asset linux
-      uses: actions/upload-release-asset@v1.0.1
+      uses: actions/upload-release-asset@v1.0.2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.get_release.outputs.upload_url }}
-        asset_path: ./Linux64.zip
-        asset_name: Linux64.zip
+        asset_path: Linux64.zip
+        asset_name: Runtime.Linux.x64
         asset_content_type: application/zip
