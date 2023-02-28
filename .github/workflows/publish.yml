@@ -31,7 +31,7 @@ jobs:
       run: zip -r Linux64.zip ./src/Linux64Exe
 
     - name: Upload Release Asset windows
-      id: upload-release-asset 
+      id: upload-release-assetwindows 
       uses: actions/upload-release-asset@v1.0.1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -42,7 +42,7 @@ jobs:
         asset_content_type: application/zip
 
     - name: Upload Release Asset linux
-      id: upload-release-asset 
+      id: upload-release-assetlinux 
       uses: actions/upload-release-asset@v1.0.1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
